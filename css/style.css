@@ -1,0 +1,82 @@
+body {
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+main {
+  background-color: #24323c;
+  width: 440px;
+  height: 440px;
+  margin: 0 auto;
+}
+
+main h2 {
+  color: #f2fcfe;
+}
+
+main input {
+  background-color: #24323d;
+  border: 2px solid #707e87;
+  height: 30px;
+  color: #f2fcfe;
+}
+
+#name {
+  display: flex;
+  justify-content: space-between;
+  width: 380px;
+  margin: 0 auto;
+}
+
+#name input {
+  width: 46.5%;
+}
+
+.input {
+  display: block;
+  width: 376px;
+  margin: 20px auto;
+}
+
+.active {
+  background-color: #1ab188;
+  border: none;
+}
+
+.passive {
+  background-color: #435259;
+  border: none;
+}
+
+#button {
+  padding-top: 25px;
+  width: 380px;
+  height: 45px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+ #button button {
+   width: 50%;
+   color: #f2fcfe;
+   cursor: pointer;
+ }
+
+ input[type=submit] {
+   cursor: pointer;
+   width: 380px;
+   height: 55px;
+   font-size: 17px;
+   font-weight: 500;
+ }
+
+ input[type=submit]:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+ }
+
+ .error {
+   color: red;
+ }

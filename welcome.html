@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personal page</title>
+  <link rel="stylesheet" href="css/welcome.css">
+</head>
+<body>
+  <main>
+    <h1>Hello, <?php echo $_SESSION["fname"] . " " . $_SESSION["lname"]; ?>.</h1>
+    <h2>Welcome to your personal page on our site.</h2>
+    <form method="post" action="welcome.php">
+      <input type="submit" value="exit" name="exit">
+    </form>
+  </main>
+</body>
+</html>
