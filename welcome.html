@@ -9,7 +9,7 @@
   <main>
     <h1>Hello, <?php echo $_SESSION["fname"] . " " . $_SESSION["lname"]; ?>.</h1>
     <h2>Welcome to your personal page on our site.</h2>
-    <form method="post" action="welcome.php">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
       <input type="submit" value="exit" name="exit">
     </form>
   </main>

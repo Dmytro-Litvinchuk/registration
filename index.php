@@ -1,40 +1,34 @@
 <?php
 
 // Check logged user;
-if (isset($_COOKIE[session_name()])) session_start();
+if (isset($_COOKIE[session_name()])) {
+  session_start();
+}
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === TRUE) {
   header("location: welcome.php");
   exit;
 }
 
 require_once "config.php";
+require_once "Validator.php";
 
-$fname_err = $lname_err = $uemail_err = $upassword_err = $email_err = $password_err = "";
-
-/**
- * Registration.
- */
-if (isset($_POST["registration"])) {
-
-  // Validate email.
-  if (empty(trim($_POST["u-email"]))) {
-    $uemail_err = "You didn't enter email";
-  }
-  else {
+// Registration.
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registration"])) {
+  $flds = ["fname", "lname", "u-email", "u-password"];
+  $validation = new RegisterValidator($_POST, $flds);
+  $errors = $validation->validateForm();
+  if (empty($errors)) {
     $sql = "SELECT id FROM reg WHERE email = :uemail";
 
     if ($stmt = $pdo->prepare($sql)) {
 
       $stmt->bindParam(":uemail", $param_uemail, PDO::PARAM_STR);
       // Set parameters
-      $param_uemail = trim($_POST["u-email"]);
+      $param_uemail = $validation->validValue("u-email");
 
       if ($stmt->execute()) {
         if ($stmt->rowCount() == 1) {
-          $uemail_err = "This email is already taken";
-        }
-        else {
-          $uemail = trim($_POST["u-email"]);
+          $errors["u-email"] = "This email is already taken";
         }
       }
       else {
@@ -43,33 +37,7 @@ if (isset($_POST["registration"])) {
     }
     unset($stmt);
   }
-
-  // Validate first name.
-  if (empty(trim($_POST["fname"]))) {
-    $fname_err = "You didn't enter first name";
-  }
-  else {
-    $fname = trim($_POST["fname"]);
-  }
-
-  // Validate last name.
-  if (empty(trim($_POST["lname"]))) {
-    $lname_err = "You didn't enter last name";
-  }
-  else {
-    $lname = trim($_POST["lname"]);
-  }
-
-  // Validate password.
-  if (empty(trim($_POST["u-password"]))) {
-    $upassword_err = "You didn't enter password";
-  }
-  else {
-    $upassword = trim($_POST["u-password"]);
-  }
-
-  // Check erors.
-  if (empty($uemail_err) && empty($upassword_err) && empty($fname_err) && empty($lname_err)) {
+  if (empty($errors)) {
     $sql = "INSERT INTO reg (fname, lname, email, password) VALUES (:fname, :lname, :uemail, :upassword)";
 
     if ($stmt = $pdo->prepare($sql)) {
@@ -80,13 +48,14 @@ if (isset($_POST["registration"])) {
       $stmt->bindParam(":upassword", $param_upassword, PDO::PARAM_STR);
 
       // Set parameter
-      $param_fname = $fname;
-      $param_lname = $lname;
-      $param_uemail = $uemail;
-      $param_upassword = password_hash($upassword, PASSWORD_DEFAULT);
+      $param_fname = $validation->validValue("fname");
+      $param_lname = $validation->validValue("lname");
+      $param_uemail = $validation->validValue("u-email");
+      $param_upassword = password_hash($validation->validValue("u-password"), PASSWORD_DEFAULT);
 
       if ($stmt->execute()) {
-        echo "Congratulations!";
+        // Message in template.
+        $cong = "Congratulations!";
         // Variable to redirect to the form log in;
         $log = "";
       }
@@ -99,30 +68,18 @@ if (isset($_POST["registration"])) {
   unset($pdo);
 }
 
-/**
- * Authorization
- */
-if (isset($_POST["login"])) {
+// Log in.
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login"])) {
 
   // Variable to redirect to the form log in;
   $log = "";
-  // Check log.
-  if (empty(trim($_POST["l-email"]))) {
-    $email_err = "You didn't enter email";
-  }
-  else {
-    $email = trim($_POST["l-email"]);
-  }
 
-  // Check pass.
-  if (empty(trim($_POST["l-password"]))) {
-    $password_err = "You didn't enter password";
-  }
-  else {
-    $password = trim($_POST["l-password"]);
-  }
+  $fld = ["l-email", "l-password"];
+  // Used class LoginValidator.
+  $valid = new LoginValidator($_POST, $fld);
+  $errors = $valid->validateForm();
 
-  if (empty($password_err) && empty($email_err)) {
+  if (empty($errors)) {
 
     $sql = "SELECT id, fname, lname, password FROM reg WHERE email = :email";
 
@@ -130,7 +87,7 @@ if (isset($_POST["login"])) {
 
       $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
 
-      $param_email = $email;
+      $param_email = $valid->validValue("l-email");
 
       if ($stmt->execute()) {
 
@@ -142,24 +99,22 @@ if (isset($_POST["login"])) {
             $hashed_password = $row["password"];
 
             // Verification password;
-            if (password_verify($password, $hashed_password)) {
+            if (password_verify($valid->validValue("l-password"), $hashed_password)) {
               session_start();
-
               $_SESSION["loggedin"] = TRUE;
               $_SESSION["id"] = $id;
               $_SESSION["fname"] = $fname;
               $_SESSION["lname"] = $lname;
 
               header("location: welcome.php");
-
             }
             else {
-              $password_err = "The password not valid";
+              $errors["l-password"] = "The password not valid";
             }
           }
         }
         else {
-          $email_err = "No account found with that email";
+          $errors["l-errors"] = "No account found with that email";
         }
       }
       else {
@@ -173,5 +128,4 @@ if (isset($_POST["login"])) {
   unset($pdo);
 }
 
-include_once "template.html";
-
+include "template.html";

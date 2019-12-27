@@ -12,40 +12,41 @@
   <h1>Task with form</h1>
 </header>
 <main>
+  <span class="cong"><?php echo $cong ?? "" ?></span>
   <div id="button">
     <button id="reg">Sign Up</button>
     <button id="log">Log In</button>
   </div>
   <div id="log-in">
     <h2>Log In</h2>
-    <form name="log-in" method="post" action="index.php">
+    <form name="log-in" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
       <input type="hidden" name="log" value="<?=isset($log)?>">
       <input type="email" maxlength="30" name="l-email" class="input lvalid" placeholder="Email" required>
-      <span class="error"><?php echo $email_err; ?></span>
+      <span class="error"><?php echo $errors["l-email"] ?? "" ?></span>
       <input type="password" maxlength="20" name="l-password" class="input lvalid"
              placeholder="Password" required>
-      <span class="error"><?php echo $password_err; ?></span>
+      <span class="error"><?php echo $errors["l-password"] ?? "" ?></span>
       <input type="submit" class="active" name="login" value="LET'S GO">
     </form>
   </div>
   <div id="sign-up">
     <h2>Sign Up for Free</h2>
-    <form name="form-registration" method="post" action="index.php">
+    <form name="form-registration" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
       <div id="name">
         <input type="text" name="fname" class="valid" placeholder="First Name" maxlength="30"
                required>
-        <span class="error"><?php echo $fname_err; ?></span>
-        <span class="error"><?php echo $lname_err; ?></span>
         <input type="text" name="lname" class="valid" placeholder="Last Name" maxlength="30"
                required>
       </div>
+      <span class="error"><?php echo $errors["fname"] ?? "" ?></span>
+      <span class="error"><?php echo $errors["lname"] ?? "" ?></span>
       <input type="email" name="u-email" class="input valid" placeholder="Email Address"
              maxlength="30"
              required>
-      <span class="error"><?php echo $uemail_err; ?></span>
+      <span class="error"><?php echo $errors["u-email"] ?? "" ?></span>
       <input type="password" name="u-password" id="password" class="input valid" placeholder="Set A Password"
              maxlength="20" required>
-      <span class="error"><?php echo $upassword_err; ?></span>
+      <span class="error"><?php echo $errors["u-password"] ?? "" ?></span>
       <input type="password" name="c-password" class="input valid"
              placeholder="Confirm Password" maxlength="20" required>
       <input type="submit" class="active" name="registration" value="GET STARTED">
