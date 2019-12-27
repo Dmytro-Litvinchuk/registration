@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registration"])) {
 
       $stmt->bindParam(":uemail", $param_uemail, PDO::PARAM_STR);
       // Set parameters
-      $param_uemail = $validation->validValue("u-email");
+      $param_uemail = $validation->getValue("u-email");
 
       if ($stmt->execute()) {
         if ($stmt->rowCount() == 1) {
@@ -48,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registration"])) {
       $stmt->bindParam(":upassword", $param_upassword, PDO::PARAM_STR);
 
       // Set parameter
-      $param_fname = $validation->validValue("fname");
-      $param_lname = $validation->validValue("lname");
-      $param_uemail = $validation->validValue("u-email");
-      $param_upassword = password_hash($validation->validValue("u-password"), PASSWORD_DEFAULT);
+      $param_fname = $validation->getValue("fname");
+      $param_lname = $validation->getValue("lname");
+      $param_uemail = $validation->getValue("u-email");
+      $param_upassword = password_hash($validation->getValue("u-password"), PASSWORD_DEFAULT);
 
       if ($stmt->execute()) {
         // Message in template.
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login"])) {
 
       $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
 
-      $param_email = $valid->validValue("l-email");
+      $param_email = $valid->getValue("l-email");
 
       if ($stmt->execute()) {
 
@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login"])) {
             $hashed_password = $row["password"];
 
             // Verification password;
-            if (password_verify($valid->validValue("l-password"), $hashed_password)) {
+            if (password_verify($valid->getValue("l-password"), $hashed_password)) {
               session_start();
               $_SESSION["loggedin"] = TRUE;
               $_SESSION["id"] = $id;
