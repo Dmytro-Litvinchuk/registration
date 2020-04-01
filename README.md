@@ -22,5 +22,5 @@ CREATE TABLE reg (
 <h3>HTML files:</h3>
   <li>template.html - the forms template.</li>
   <li>welcome.html - personal page template.</li>
-<ul>
+</ul>
 <p>I used <a href="https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php">this</a> tutorial.</p>
